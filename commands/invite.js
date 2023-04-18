@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const Discord = require("discord.js");
 var url = "https://discord.com/api/oauth2/authorize?client_id=1014226427429798009&permissions=412317240384&scope=bot%20applications.commands"
 const MessageEmbed = Discord.MessageEmbed
@@ -7,7 +7,7 @@ module.exports = {
         .setName('invite')
         .setDescription('Invite the bot to your server'),
     async execute(interaction) {
-        const inviteEmbed = new MessageEmbed()
+        const inviteEmbed = new EmbedBuilder()
 		.setColor('#ffff00')
 		.setTitle("Add me to your server!")
 		.setDescription('Share your love of music')
