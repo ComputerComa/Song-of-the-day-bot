@@ -42,16 +42,16 @@ async function buildSotdEmbed(ping_role, user_credit, spotify_url_to_parse) {
 
     await getData(spotify_url_to_parse).then(data => spotifydata = data)
     const trackinfo = spotifydata
-    console.log(trackinfo)
+    //console.log(trackinfo)
     const coverArtData = trackinfo.coverArt
-    console.log(coverArtData)
+    //console.log(coverArtData)
 
     const album_image = coverArtData.sources[1].url
-    console.log(album_image)
+    //console.log(album_image)
     //console.log(coverArtData.extractedColors.colorDark.hex)
 
     const dominant_color = convert.hex.rgb(coverArtData.extractedColors.colorDark.hex)
-    console.log(dominant_color)
+    //console.log(dominant_color)
 
     var explicit = trackinfo.isExplicit
     if (explicit) {
@@ -116,30 +116,31 @@ module.exports = {
         const guild_ID = interaction.guild.id
         let sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse)
         let announced = await hasAnnouncedHistory(guild_ID, songID)
-        if (announced) {
-            interaction.followUp()
-            //console.log("this song has been announced in this server before")
+        let forced = interaction.options.getBoolean("force")
+        console.log(forced)
+        if (announced & !forced){
             let historyitem = await SOTDHistory.findOne({ guild_id: guild_ID.toString(), song_ID: songID.toString() })
             let date = historyitem.date_announced.toString()
-
             const NoticeEmbed = new EmbedBuilder()
-                .setColor('Red')
-                .setTitle("Notice")
-                .setDescription(`It appears you already have announced this song in this server on _${date}_.\nIf you still would like to announce this song set the Force option to true`);
-            await interaction.editReply({content: 'Announcement Sent!', phemeral: true })
+            .setColor([255,0,0])
+            .setTitle("Notice")
+            .setDescription(`It appears you already have announced this song in this server before.\nIf you still would like to announce this song set the Force option to true`)
+            .addFields({
+                name: `Last announced`,
+            value: `_${date}_`
+        });
+        await interaction.editReply({content: 'Announcement Cancelled!', ephemeral: true })
             await interaction.followUp({ ephemeral: true, embeds: [NoticeEmbed]})
-
-        } else {
-            //console.log("this song has not been announced in this server before")
+        
+        }else if (announced & forced){
+            await interaction.editReply({ content: 'Forced Announcement Sent!', ephemeral: true })
+            await interaction.channel.send({ embeds: [sotdPingEmbed] })
+        }else {
             var SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now() })
             SOTDHistoryEntry.save();
 
             await interaction.editReply({ content: 'Announcement Sent!', ephemeral: true })
             await interaction.channel.send({ embeds: [sotdPingEmbed] })
         }
-
-
-
     }
-
 };
