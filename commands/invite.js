@@ -7,11 +7,12 @@ module.exports = {
         .setName('invite')
         .setDescription('Invite the bot to your server'),
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true })
         const inviteEmbed = new EmbedBuilder()
-		.setColor('#ffff00')
+		.setColor([255,255,0])
 		.setTitle("Add me to your server!")
 		.setDescription('Share your love of music')
 		.addFields({name:'URL' ,value: `${url}`,inline: true})
-        interaction.reply({embeds: [inviteEmbed], ephemeral: true })
+        await interaction.editReply({embeds: [inviteEmbed], ephemeral: true })
     }
 };
