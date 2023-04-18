@@ -116,7 +116,7 @@ module.exports = {
         const guild_ID = interaction.guild.id
         let sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse)
         let announced = await hasAnnouncedHistory(guild_ID, songID)
-        let forced = interaction.options.getBoolean("force")
+        let forced = interaction.options.getBoolean("force") ?? false
         console.log(forced)
         if (announced & !forced){
             let historyitem = await SOTDHistory.findOne({ guild_id: guild_ID.toString(), song_ID: songID.toString() })
