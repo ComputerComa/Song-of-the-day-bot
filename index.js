@@ -5,11 +5,11 @@ const Database = require("./config/Database");
 const db = new Database();
 db.connect();
 
-const {Client, Intents, Collection} = require('discord.js');
+const {Client, GatewayIntentBits , Collection} = require('discord.js');
 
 // Create a new client instance
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]
 });
 
 
@@ -35,17 +35,14 @@ for (const file of commandFiles) {
     commands.push(command.data.toJSON());
     client.commands.set(command.data.name, command);
 }
-for (const file of eventFiles) {
+ for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
         client.once(event.name, (...args) => event.execute(...args, commands));
     } else {
         client.on(event.name, (...args) => event.execute(...args, commands));
     }
-}
+} 
 
-if (PRODUCTION == 'TRUE') {
+
 client.login(TOKEN);
-} else {
-    client.login(DEV_TOKEN)
-}

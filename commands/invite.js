@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require("discord.js");
-var url = "https://discord.com/api/oauth2/authorize?client_id=1014226427429798009&permissions=8&scope=bot%20applications.commands"
+var url = "https://discord.com/api/oauth2/authorize?client_id=1014226427429798009&permissions=412317240384&scope=bot%20applications.commands"
 const MessageEmbed = Discord.MessageEmbed
 module.exports = {
     data: new SlashCommandBuilder()

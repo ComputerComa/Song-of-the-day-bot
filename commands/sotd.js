@@ -1,4 +1,4 @@
-const {SlashCommandBuilder} = require('@discordjs/builders');
+const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const {
     ms,
     s,
@@ -14,6 +14,7 @@ const MessageActionRow = Discord.MessageActionRow
 const MessageButton = Discord.MessageButton
 const SOTDHistory = require("../models/SOTDHistory")
 const utils = require('../etc/utils')
+var convert = require('color-convert');
 
 function msToHms(time, ms) {
     let pretty = ms.to(h, m, s)(time)
@@ -24,62 +25,56 @@ function msToHms(time, ms) {
     if (pretty[0] == "00") {
         pretty.splice(0, 1)
         //console.log(pretty)
-        out = `${
-            pretty[0]
-        }:${
-            pretty[1]
-        }`
+        out = `${pretty[0]
+            }:${pretty[1]
+            }`
     } else {
-        out = `${
-            pretty[0]
-        }:${
-            pretty[1]
-        }:${
-            pretty[2]
-        }`
+        out = `${pretty[0]
+            }:${pretty[1]
+            }:${pretty[2]
+            }`
     }
     //console.log(out)
 
     return out
 }
-async function buildSotdEmbed(ping_role,user_credit,spotify_url_to_parse,){
+async function buildSotdEmbed(ping_role, user_credit, spotify_url_to_parse) {
 
-    const spotifydata = await getDetails(spotify_url_to_parse)
-    const trackinfo = spotifydata.tracks[0]
-    //console.log(trackinfo)
+    await getData(spotify_url_to_parse).then(data => spotifydata = data)
+    const trackinfo = spotifydata
+    console.log(trackinfo)
     const coverArtData = trackinfo.coverArt
-    //console.log(coverArtData)
-    
-        const album_image = coverArtData.sources[1].url
-        console.log(album_image)
+    console.log(coverArtData)
 
-        const dominant_color = coverArtData.extractedColors.colorDark.hex
-        console.log(dominant_color)
-    
-        var explicit = trackinfo.isExplicit
-        if (explicit) {
-           explicit = "Yes"
-        } else {
-            explicit = "No"
-        }
-        
-        const duration = trackinfo.duration
-        var pretty_duration = msToHms(duration, ms)
-        //console.log(pretty_duration)
-        var ReleaseDate = trackinfo.releaseDate.isoString
-           dformatted = new Date(ReleaseDate)
+    const album_image = coverArtData.sources[1].url
+    console.log(album_image)
+    //console.log(coverArtData.extractedColors.colorDark.hex)
 
-        
-     const sotdPingEmbed = new MessageEmbed().setColor(dominant_color).setTitle("Announcement ping.").setDescription(`Hey ${ping_role}! There's a new SOTD suggestion!`).setImage(album_image).addFields({
+    const dominant_color = convert.hex.rgb(coverArtData.extractedColors.colorDark.hex)
+    console.log(dominant_color)
+
+    var explicit = trackinfo.isExplicit
+    if (explicit) {
+        explicit = "Yes"
+    } else {
+        explicit = "No"
+    }
+
+    const duration = trackinfo.duration
+    var pretty_duration = msToHms(duration, ms)
+    //console.log(pretty_duration)
+    var ReleaseDate = trackinfo.releaseDate.isoString
+    dformatted = new Date(ReleaseDate)
+
+
+    const sotdPingEmbed = new EmbedBuilder().setColor(dominant_color).setTitle("Announcement ping.").setDescription(`Hey ${ping_role}! There's a new SOTD suggestion!`).setImage(album_image).addFields({
         name: `Song`,
-        value: `${
-            trackinfo.name
-        }`
+        value: `${trackinfo.name
+            }`
     }, {
         name: `Artist`,
-        value: `${
-            trackinfo.artists[0].name
-        }`
+        value: `${trackinfo.artists[0].name
+            }`
     }, {
         name: `Duration`,
         value: `${pretty_duration}`
@@ -95,13 +90,13 @@ async function buildSotdEmbed(ping_role,user_credit,spotify_url_to_parse,){
     }, {
         name: `Suggested By:`,
         value: `${user_credit}`
-     }).setFooter({text: 'Thanks for the song suggestion!'}).setTimestamp()
+    }).setFooter({ text: 'Thanks for the song suggestion!' }).setTimestamp()
 
     return sotdPingEmbed
 }
 
 async function hasAnnouncedHistory(serverID, songID) {
-    let history_count =  await SOTDHistory.count({guild_id: serverID.toString(), song_ID: songID.toString()})
+    let history_count = await SOTDHistory.count({ guild_id: serverID.toString(), song_ID: songID.toString() })
     if (history_count > 0) {
         return true
     } else {
@@ -109,69 +104,42 @@ async function hasAnnouncedHistory(serverID, songID) {
     }
 }
 module.exports = {
-    data: new SlashCommandBuilder().setName('announce').setDescription('Create a SOTD announcement').addStringOption(option => option.setName('spotify-url').setDescription('Spotify URL').setRequired(true)).addRoleOption(option => option.setName('ping-role').setDescription('The role to ping for the announcement').setRequired(true)).addUserOption(option => option.setName('user-credit').setDescription('The user to credit for the song suggestion').setRequired(true)),
+    data: new SlashCommandBuilder().setName('announce').setDescription('Create a SOTD announcement').addStringOption(option => option.setName('spotify-url').setDescription('Spotify URL').setRequired(true)).addRoleOption(option => option.setName('ping-role').setDescription('The role to ping for the announcement').setRequired(true)).addUserOption(option => option.setName('user-credit').setDescription('The user to credit for the song suggestion').setRequired(true)).addBooleanOption(option => option.setName("force").setDescription("Force the song to be announced even if it's been announced before")),
 
 
     async execute(interaction) {
-      await interaction.deferReply({ephemeral: true})
+        await interaction.deferReply({ ephemeral: true })
         const spotify_url_to_parse = interaction.options.getString('spotify-url')
-        let isNewURl =  spotify_url_to_parse.includes("?si=")
-        const songID = utils.getSongID(spotify_url_to_parse,isNewURl)
+        let isNewURl = spotify_url_to_parse.includes("?si=")
+        const songID = utils.getSongID(spotify_url_to_parse, isNewURl)
         console.log(songID)
         const guild_ID = interaction.guild.id
-        let sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'),interaction.options.getUser('user-credit'),spotify_url_to_parse)
-      let announced= await hasAnnouncedHistory(guild_ID,songID)
-      if(announced){
-        //console.log("this song has been announced in this server before")
-        let historyitem = await SOTDHistory.findOne({guild_id: guild_ID.toString(), song_ID: songID.toString()})
-        let date = historyitem.date_announced.toString()
-        const BtnYes = new MessageButton()
-            .setCustomId('yes')
-            .setLabel('Yes')
-            .setStyle('PRIMARY')
+        let sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse)
+        let announced = await hasAnnouncedHistory(guild_ID, songID)
+        if (announced) {
+            interaction.followUp()
+            //console.log("this song has been announced in this server before")
+            let historyitem = await SOTDHistory.findOne({ guild_id: guild_ID.toString(), song_ID: songID.toString() })
+            let date = historyitem.date_announced.toString()
 
-            const BtnNo = new MessageButton()
-            .setCustomId('no')
-            .setLabel('No')
-            .setStyle('PRIMARY')
+            const NoticeEmbed = new EmbedBuilder()
+                .setColor('Red')
+                .setTitle("Notice")
+                .setDescription(`It appears you already have announced this song in this server on _${date}_.\nIf you still would like to announce this song set the Force option to true`);
+            await interaction.editReply({content: 'Announcement Sent!', phemeral: true })
+            await interaction.followUp({ ephemeral: true, embeds: [NoticeEmbed]})
 
-        const NoticeEmbed = new MessageEmbed()
-          .setColor("#FF0000")
-          .setTitle("Notice")
-          .setDescription(`It appears you already have announced this song in this server on _${date}_.\nDo you still want to announce this song?`);
+        } else {
+            //console.log("this song has not been announced in this server before")
+            var SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now() })
+            SOTDHistoryEntry.save();
 
-          const row = new MessageActionRow()
-          .addComponents(
-            BtnYes,
-            BtnNo
-          )
-          await interaction.editReply({ephemeral: true, embeds: [NoticeEmbed],components: [row]})
+            await interaction.editReply({ content: 'Announcement Sent!', ephemeral: true })
+            await interaction.channel.send({ embeds: [sotdPingEmbed] })
+        }
 
-      }else{
-        //console.log("this song has not been announced in this server before")
-        var SOTDHistoryEntry = new SOTDHistory({guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now()})
-          SOTDHistoryEntry.save();
 
-       await interaction.editReply({content: 'Announcement Sent!', ephemeral: true})
-        await interaction.channel.send({embeds: [sotdPingEmbed]})
-      }
 
-        
-      const filter = i => i.user.id === interaction.user.id;
-      const collector = interaction.channel.createMessageComponentCollector({filter,time:60000})
-
-      collector.on('collect',async i =>{
-          if(i.customId === "yes"){
-              await i.update({content: 'Announcement Sent!',ephemeral: true,embeds:[],components: []})
-              collector.stop()
-              await i.channel.send({embeds:[sotdPingEmbed]})
-          }else if(i.customId === "no"){
-              await i.update({ephemeral: true,content:"This announcement was canceled!",components:[],embeds:[]})
-          }else{
-              return
-          }
-    
-      })
     }
 
 };

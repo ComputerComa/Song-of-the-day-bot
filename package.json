@@ -19,10 +19,13 @@
   "dependencies": {
     "@discordjs/builders": "^1.6.1",
     "@discordjs/voice": "^0.16.0",
+    "color-convert": "^2.0.1",
+    "discord-api-types": "^0.37.39",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
     "fs": "^0.0.1-security",
     "isomorphic-unfetch": "^4.0.2",
+    "mongoose": "^7.0.4",
     "spotify-url-info": "^3.2.3",
     "time-convert": "^0.0.2"
   }
