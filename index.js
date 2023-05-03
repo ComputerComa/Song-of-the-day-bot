@@ -1,15 +1,15 @@
 const fs = require('fs');
 
 // Require the necessary discord.js classes
-const Database = require("./config/Database");
+const Database = require('./config/Database');
 const db = new Database();
 db.connect();
 
-const {Client, GatewayIntentBits , Collection} = require('discord.js');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 
 // Create a new client instance
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });
 
 
@@ -21,28 +21,25 @@ const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'
 const dotenv = require('dotenv');
 dotenv.config();
 const TOKEN = process.env['TOKEN'];
-const DEV_TOKEN = process.env['DEV_TOKEN']
-const TEST_GUILD_ID = process.env['TEST_GUILD_ID'];
-const CLIENT_ID = process.env['CLIENT_ID']
-const PRODUCTION = process.env['PRODUCTION']
 const commands = [];
 
 // Creating a collection for commands in client
 client.commands = new Collection();
 
 for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    commands.push(command.data.toJSON());
-    client.commands.set(command.data.name, command);
+	const command = require(`./commands/${file}`);
+	commands.push(command.data.toJSON());
+	client.commands.set(command.data.name, command);
 }
- for (const file of eventFiles) {
-    const event = require(`./events/${file}`);
-    if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args, commands));
-    } else {
-        client.on(event.name, (...args) => event.execute(...args, commands));
-    }
-} 
+for (const file of eventFiles) {
+	const event = require(`./events/${file}`);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args, commands));
+	}
+	else {
+		client.on(event.name, (...args) => event.execute(...args, commands));
+	}
+}
 
 
 client.login(TOKEN);

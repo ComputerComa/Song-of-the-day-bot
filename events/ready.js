@@ -1,48 +1,46 @@
-const {REST} = require('@discordjs/rest');
-const {Routes} = require('discord-api-types/v10');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v10');
 const dotenv = require('dotenv');
 dotenv.config();
 const TOKEN = process.env['TOKEN'];
 
-const CLIENT_ID = process.env['CLIENT_ID']
-
 
 module.exports = {
-    name: "ready",
-    once: true,
-    execute(client, commands) { // set the bot status
-        client.user.setPresence({
-            activities: [{
-                name: "Playing with the spotify Mixtape",
-                type: "PLAYING",
-            }],
-            statu:"idle"
-        })
-        console.log(`Logged in as ${client.user.id}`);
-        let rest = null
-        // Registering the commands in the client
-        const CLIENT_ID = client.user.id;
-        //console.log(CLIENT_ID)
+	name: 'ready',
+	once: true,
+	execute(client, commands) {
+		client.user.setPresence({
+			activities: [{
+				name: 'Playing with the spotify Mixtape',
+				type: 'PLAYING',
+			}],
+			statu:'idle',
+		});
+		console.log(`Logged in as ${client.user.id}`);
+		let rest = null;
+		// Registering the commands in the client
+		const CLIENT_ID = client.user.id;
+		// console.log(CLIENT_ID)
 
-         rest = new REST().setToken(TOKEN);
-        
-        (async () => {
-            try {
-                
-                    /* await rest.put(Routes.applicationCommands(CLIENT_ID), {
+		rest = new REST().setToken(TOKEN);
+
+		(async () => {
+			try {
+
+				/* await rest.put(Routes.applicationCommands(CLIENT_ID), {
                         body: []
                     },)*/
-                    await rest.put(Routes.applicationCommands(CLIENT_ID), {
-                        body: commands
-                    },);
-                    console.log('Successfully registered application commands globally');
-                
-            } catch (error) {
-                if (error) 
-                    console.error(error);
-            }
-        })();
+				await rest.put(Routes.applicationCommands(CLIENT_ID), {
+					body: commands,
+				});
+				console.log('Successfully registered application commands globally');
 
-    }
-}
-console.log("Bot ready")
+			}
+			catch (error) {
+				if (error) {console.error(error);}
+			}
+		})();
+
+	},
+};
+console.log('Bot ready');
