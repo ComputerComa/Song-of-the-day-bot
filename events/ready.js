@@ -11,10 +11,8 @@ module.exports = {
 	execute(client, commands) {
 		client.user.setPresence({
 			activities: [{
-				name: 'Playing with the spotify Mixtape',
-				type: 'PLAYING',
+				name: 'With the spotify Mixtape',
 			}],
-			statu:'idle',
 		});
 		console.log(`Logged in as ${client.user.id}`);
 		let rest = null;
