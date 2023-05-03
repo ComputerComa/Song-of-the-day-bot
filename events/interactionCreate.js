@@ -1,29 +1,31 @@
-const Discord = require('discord.js')
 module.exports = {
-    name: "interactionCreate",
-    async execute(interaction) {
-       // console.log(interaction.id)
+	name: 'interactionCreate',
+	async execute(interaction) {
+		// console.log(interaction.id)
 
 
-        if (interaction.isCommand()) {
+		if (interaction.isCommand()) {
 
-            const command = interaction.client.commands.get(interaction.commandName);
-    if (! command){
-        
-        return;
-        
-    }else{
-        
-    
+			const command = interaction.client.commands.get(interaction.commandName);
+			if (!command) {
 
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        if (error){
-            console.error(error);
-        }
+				return;
 
-        await interaction.editReply({content: 'There was an error while executing this command!'});
-    }}}
-    }
-}
+			}
+			else {
+
+
+				try {
+					await command.execute(interaction);
+				}
+				catch (error) {
+					if (error) {
+						console.error(error);
+					}
+
+					await interaction.editReply({ content: 'There was an error while executing this command!' });
+				}
+			}
+		}
+	},
+};

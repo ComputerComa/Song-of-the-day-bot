@@ -28,5 +28,8 @@
     "mongoose": "^7.0.4",
     "spotify-url-info": "^3.2.3",
     "time-convert": "^0.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.39.0"
   }
 }
