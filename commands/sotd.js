@@ -137,7 +137,8 @@ module.exports = {
 		else if (announced & forced) {
 			await interaction.editReply({ content: 'Forced Announcement Sent!', ephemeral: true });
 			await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
-			await interaction.channel.send({ embeds: [sotdPingEmbed] });
+			const message = await interaction.channel.send({ embeds: [sotdPingEmbed] })
+				.then(() => message.react('🎵'));
 		}
 		else {
 			const SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now() });
