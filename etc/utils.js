@@ -18,7 +18,22 @@ module.exports = {
 			trackid = NewTrackid[0];
 		}
 		const outrackID = BaseURI + trackid;
-		console.log(outrackID);
+		// console.log(outrackID);
 		return outrackID;
+	},
+	rebuildSongID: function rebuildSongID(input) {
+		const BaseURI = 'https://open.spotify.com/track/';
+		const out = BaseURI + input;
+		return out;
+	},
+	parseNewFormat: function parseNewFormat(input) {
+		const out_1 = input.split(':');
+		const out_2 = out_1[2];
+		return out_2;
+	},
+	reconvertURL: function reconvertURL(input) {
+		const out_1 = this.parseNewFormat(input);
+		const out_2 = this.rebuildSongID(out_1);
+		return out_2;
 	},
 };

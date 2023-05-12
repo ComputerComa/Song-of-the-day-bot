@@ -63,33 +63,38 @@ async function buildSotdEmbed(ping_role, user_credit, spotify_url_to_parse) {
 	const pretty_duration = msToHms(duration, ms);
 	// console.log(pretty_duration)
 	const ReleaseDate = trackinfo.releaseDate.isoString;
-	const dformatted = new Date(ReleaseDate);
+	const dformatted = new Date(ReleaseDate).getFullYear();
 
 
-	const sotdPingEmbed = new EmbedBuilder().setColor(dominant_color).setTitle('Announcement ping.').setDescription('SOTD Announcement ping').setImage(album_image).addFields({
-		name: 'Song',
-		value: `${trackinfo.name
-		}`,
-	}, {
-		name: 'Artist',
-		value: `${trackinfo.artists[0].name
-		}`,
-	}, {
-		name: 'Duration',
-		value: `${pretty_duration}`,
-	}, {
-		name: 'Released',
-		value: `${dformatted}`,
-	}, {
-		name: 'Spotify URL',
-		value: `${spotify_url_to_parse}`,
-	}, {
-		name: 'Explicit',
-		value: `${explicit}`,
-	}, {
-		name: 'Suggested By:',
-		value: `${user_credit}`,
-	}).setFooter({ text: 'Thanks for the song suggestion!' }).setTimestamp();
+	const sotdPingEmbed = new EmbedBuilder()
+		.setColor(dominant_color)
+		.setTitle('Announcement ping.')
+		.setDescription('SOTD Announcement ping')
+		.setImage(album_image)
+		.addFields({
+			name: 'Song',
+			value: `${trackinfo.name
+			}`,
+		}, {
+			name: 'Artist',
+			value: `${trackinfo.artists[0].name
+			}`,
+		}, {
+			name: 'Duration',
+			value: `${pretty_duration}`,
+		}, {
+			name: 'Released',
+			value: `${dformatted}`,
+		}, {
+			name: 'Spotify URL',
+			value: `${spotify_url_to_parse}`,
+		}, {
+			name: 'Explicit',
+			value: `${explicit}`,
+		}, {
+			name: 'Suggested By:',
+			value: `${user_credit}`,
+		}).setFooter({ text: 'Thanks for the song suggestion!' }).setTimestamp();
 
 	return sotdPingEmbed;
 }
@@ -104,7 +109,20 @@ async function hasAnnouncedHistory(serverID, songID) {
 	}
 }
 module.exports = {
-	data: new SlashCommandBuilder().setName('announce').setDescription('Create a SOTD announcement').addStringOption(option => option.setName('spotify-url').setDescription('Spotify URL').setRequired(true)).addRoleOption(option => option.setName('ping-role').setDescription('The role to ping for the announcement').setRequired(true)).addUserOption(option => option.setName('user-credit').setDescription('The user to credit for the song suggestion').setRequired(true)).addBooleanOption(option => option.setName('force').setDescription('Force the song to be announced even if it\'s been announced before')),
+	data: new SlashCommandBuilder().setName('announce')
+		.setDescription('Create a SOTD announcement')
+		.addStringOption(option => option.setName('spotify-url')
+			.setDescription('Spotify URL')
+			.setRequired(true))
+		.addRoleOption(option => option.setName('ping-role')
+			.setDescription('The role to ping for the announcement')
+			.setRequired(true))
+		.addUserOption(option => option.setName('user-credit')
+			.setDescription('The user to credit for the song suggestion')
+			.setRequired(true))
+		.addBooleanOption(option => option.setName('force')
+			.setDescription('Force the song to be announced even if it\'s been announced before'))
+		.setDMPermission(false),
 
 
 	async execute(interaction) {
@@ -112,9 +130,11 @@ module.exports = {
 		const spotify_url_to_parse = interaction.options.getString('spotify-url');
 		const isNewURl = spotify_url_to_parse.includes('?si=');
 		const songID = utils.getSongID(spotify_url_to_parse, isNewURl);
-		console.log(songID);
+		// console.log(songID);
 		const guild_ID = interaction.guild.id;
 		const ping_role = interaction.options.getRole('ping-role');
+		const trackinfo = await getData(spotify_url_to_parse).then(data => spotifydata = data);
+		const storable_url = utils.reconvertURL(songID);
 		const sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse);
 		const announced = await hasAnnouncedHistory(guild_ID, songID);
 		const forced = interaction.options.getBoolean('force') ?? false;
@@ -141,7 +161,7 @@ module.exports = {
 				.then(() => message.react('🎵'));
 		}
 		else {
-			const SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now() });
+			const SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now(), song_name: trackinfo.name, song_url: storable_url });
 			SOTDHistoryEntry.save();
 
 			await interaction.editReply({ content: 'Announcement Sent!', ephemeral: true }).then();

@@ -8,7 +8,6 @@ module.exports = {
 
 			const command = interaction.client.commands.get(interaction.commandName);
 			if (!command) {
-
 				return;
 
 			}
@@ -26,6 +25,9 @@ module.exports = {
 					await interaction.editReply({ content: 'There was an error while executing this command!' });
 				}
 			}
+		}
+		else {
+			console.log('This was a message');
 		}
 	},
 };

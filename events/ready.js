@@ -14,6 +14,7 @@ module.exports = {
 				name: 'With the spotify Mixtape',
 			}],
 		});
+		client.user.setStatus('idle');
 		console.log(`Logged in as ${client.user.id}`);
 		let rest = null;
 		// Registering the commands in the client
