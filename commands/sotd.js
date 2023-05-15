@@ -83,7 +83,7 @@ async function buildSotdEmbed(ping_role, user_credit, spotify_url_to_parse) {
 			name: 'Duration',
 			value: `${pretty_duration}`,
 		}, {
-			name: 'Released',
+			name: 'Release Year',
 			value: `${dformatted}`,
 		}, {
 			name: 'Spotify URL',
@@ -166,7 +166,8 @@ module.exports = {
 
 			await interaction.editReply({ content: 'Announcement Sent!', ephemeral: true }).then();
 			await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
-			await interaction.channel.send({ embeds: [sotdPingEmbed] });
+			const message = await interaction.channel.send({ embeds: [sotdPingEmbed] })
+				.then(() => message.react('🎵'));
 		}
 	},
 };
