@@ -157,7 +157,14 @@ module.exports = {
 		else if (announced & forced) {
 			await interaction.editReply({ content: 'Forced Announcement Sent!', ephemeral: true });
 			await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
-			await interaction.channel.send({ embeds: [sotdPingEmbed] });
+			await interaction.channel.send({ embeds: [sotdPingEmbed] })
+				.then((message) => {
+					message.react('🇲');
+					message.react('🇺');
+					message.react('🇸');
+					message.react('🇮');
+					message.react('🇨');
+				});
 		}
 		else {
 			const SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now(), song_name: trackinfo.name, song_url: storable_url });
@@ -165,7 +172,14 @@ module.exports = {
 
 			await interaction.editReply({ content: 'Announcement Sent!', ephemeral: true }).then();
 			await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
-			await interaction.channel.send({ embeds: [sotdPingEmbed] });
+			await interaction.channel.send({ embeds: [sotdPingEmbed] })
+				.then((message) => {
+					message.react('🇲');
+					message.react('🇺');
+					message.react('🇸');
+					message.react('🇮');
+					message.react('🇨');
+				});
 		}
 	},
 };
