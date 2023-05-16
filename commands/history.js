@@ -14,14 +14,18 @@ async function buildHistoryEmbed(in_data, page_s, page_e, gid_Name) {
 	for (const song of in_data) {
 		// console.log('loop');
 		const url = utils.reconvertURL(song.song_ID);
-		const spotifydata = await getData(url);
-		const trackinfo = spotifydata;
-		const name = trackinfo.name;
-		const artist = trackinfo.artists[0].name;
-		const ann_date = new Date(song.date_announced);
-		embed_fields.push({
-			name: `${name} - ${artist}`,
-			value: `${ann_date.getMonth()}-${ann_date.getDay()}-${ann_date.getFullYear()}`,
+		await getData(url).then((spotifydata) => {
+			const trackinfo = spotifydata;
+			const name = trackinfo.name;
+			const artist = trackinfo.artists[0].name;
+			const ann_date = new Date(song.date_announced);
+			const ann_month = ann_date.getMonth() + 1;
+			const ann_day = ann_date.getDate();
+			const ann_year = ann_date.getFullYear();
+			embed_fields.push({
+				name: `${name} - ${artist}`,
+				value: `${ann_month}-${ann_day}-${ann_year}`,
+			});
 		});
 	}
 	// console.log('end of loop');
