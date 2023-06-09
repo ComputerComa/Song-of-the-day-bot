@@ -2,13 +2,15 @@
 /* eslint-disable no-shadow */
 const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const suggestionHistory = require('../models/suggestionHistory');
-const songHistory = require('../models/suggestionHistory');
+const songHistory = require('../models/SOTDHistory');
 const { randomUUID } = require('crypto');
 
 async function hasHistory(serverID, song_url) {
 	const suggestion_count = await suggestionHistory.count({ guild_id: serverID.toString(), song_url: song_url.toString() });
 	const announced_count = await songHistory.count({ guild_id: serverID.toString(), song_url: song_url.toString() });
-	if (announced_count > 0 || suggestion_count > 0) {
+	const total_count = suggestion_count + announced_count;
+	console.log(total_count);
+	if (total_count >= 1) {
 		return true;
 	}
 	else {
