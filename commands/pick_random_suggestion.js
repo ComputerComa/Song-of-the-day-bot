@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
+const { PermissionFlagsBits } = require('discord.js');
 // const SOTDHistory = require('../models/SOTDHistory');
 const suggestion_History = require('../models/suggestionHistory');
 const fetch = require('isomorphic-unfetch');
@@ -29,7 +30,8 @@ async function buildEmbed(in_data) {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('pick_random_suggestion')
-		.setDescription('Run this command to be presented with a random song to use as Song of the Day!'),
+		.setDescription('Run this command to be presented with a random song to use as Song of the Day!')
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator | PermissionFlagsBits.ManageGuild),
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 		const guild_ID = interaction.guild.id;
