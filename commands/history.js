@@ -39,7 +39,7 @@ async function buildHistoryEmbed(in_data, page_s, page_e, gid_Name) {
 }
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('get-announcement-history')
+		.setName('get_announcement_history')
 		.setDescription('Gets the announcement history for the server')
 		.addIntegerOption(option =>
 			option.setName('page')
