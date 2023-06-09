@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const fetch = require('isomorphic-unfetch');
 const { getData } = require('spotify-url-info')(fetch);
 const SOTDHistory = require('../models/SOTDHistory');
+const { PermissionFlagsBits } = require('discord.js');
 const utils = require('../etc/utils');
 // eslint-disable-next-line prefer-const
 const sort = { date_announced: -1 };
@@ -42,7 +43,8 @@ module.exports = {
 		.setDescription('Gets the announcement history for the server')
 		.addIntegerOption(option =>
 			option.setName('page')
-				.setDescription('The page of history to view.')),
+				.setDescription('The page of history to view.'))
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator | PermissionFlagsBits.ManageGuild | PermissionFlagsBits.ManageEvents),
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 		const guild_ID = interaction.guild.id;
