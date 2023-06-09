@@ -1,17 +1,3 @@
-
-.. _permissions:
-
-===================
-Command Permissions
-===================
-The Following commands require `Administrator` or `Manage Server` permissions
-*	``/announce```
-*	``/get_announcement_history``
-* 	``/get_suggestion_history``
-* 	``/mark_suggestion_used``
-* 	``/pick_random_suggestion``
-
-
 .. _command_overviews:
 =================
 Command Overviews
@@ -28,15 +14,16 @@ Command Overviews
 * ``/suggest_song`` -- Suggest a song to possibly be used for SOTD
 * ``/user`` -- view the info of the user who ran the command
 
+.. _permissions:
 
-
-
-
-
-
-
-
-
-
+===================
+Command Permissions
+===================
+The Following commands require `Administrator` or `Manage Server` permissions
+*	``/announce```
+*	``/get_announcement_history``
+* 	``/get_suggestion_history``
+* 	``/mark_suggestion_used``
+* 	``/pick_random_suggestion``
 
 Last edited: |today|
