@@ -6,7 +6,7 @@ Command Permissions
 ===================
 The Following commands require `Administrator` or `Manage Server` permissions
 *	``/announce```
-*	``/get-announcement-history``
+*	``/get_announcement_history``
 * 	``/get_suggestion_history``
 * 	``/mark_suggestion_used``
 * 	``/pick_random_suggestion``
@@ -40,8 +40,6 @@ Command Overviews
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. toctree::
-   :maxdepth: 2
 
 ====================================
 Welcome to SOTD Bot's documentation!
