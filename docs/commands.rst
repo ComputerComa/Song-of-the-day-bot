@@ -20,6 +20,7 @@ Command Overviews
 Command Permissions
 ===================
 The Following commands require `Administrator` or `Manage Server` permissions
+
 • ``/announce`` 
 • ``/get_announcement_history``
 •  ``/get_suggestion_history``
