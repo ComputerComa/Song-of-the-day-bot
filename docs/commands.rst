@@ -20,10 +20,10 @@ Command Overviews
 Command Permissions
 ===================
 The Following commands require `Administrator` or `Manage Server` permissions
-* -	``/announce`` 
-* -	``/get_announcement_history``
-* -	``/get_suggestion_history``
-* -	``/mark_suggestion_used``
-* -	``/pick_random_suggestion``
+• ``/announce`` 
+• ``/get_announcement_history``
+•  ``/get_suggestion_history``
+• ``/mark_suggestion_used``
+• ``/pick_random_suggestion``
 
 Last edited: |today|
