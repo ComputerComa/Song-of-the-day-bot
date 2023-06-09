@@ -19,6 +19,7 @@
   "dependencies": {
     "@discordjs/builders": "^1.6.1",
     "@discordjs/voice": "^0.16.0",
+    "@types/node": "^20.2.5",
     "color-convert": "^2.0.1",
     "discord-api-types": "^0.37.39",
     "discord.js": "^14.9.0",
