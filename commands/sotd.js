@@ -123,7 +123,7 @@ module.exports = {
 		.addBooleanOption(option => option.setName('force')
 			.setDescription('Force the song to be announced even if it\'s been announced before'))
 		.setDMPermission(false)
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator | PermissionFlagsBits.ManageGuild),
 
 
 	async execute(interaction) {
