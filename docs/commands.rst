@@ -39,6 +39,10 @@ Command Overviews
    sphinx-quickstart on Fri Jun  9 13:34:25 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
+
+.. toctree::
+   :maxdepth: 2
+
 ====================================
 Welcome to SOTD Bot's documentation!
 ====================================
