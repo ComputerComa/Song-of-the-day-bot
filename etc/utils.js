@@ -36,4 +36,14 @@ module.exports = {
 		const out_2 = this.rebuildSongID(out_1);
 		return out_2;
 	},
+	validate_spotify_url: function validateURL(input) {
+		const reg = /((open)\.spotify\.com\/)/;
+		const out = input.match(reg);
+		if (out > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	},
 };
