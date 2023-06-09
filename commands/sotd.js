@@ -12,7 +12,7 @@ const { getData } = require('spotify-url-info')(fetch);
 const SOTDHistory = require('../models/SOTDHistory');
 const utils = require('../etc/utils');
 const convert = require('color-convert');
-
+const { PermissionFlagsBits } = require('discord.js');
 function msToHms(time, ms) {
 	const pretty = ms.to(h, m, s)(time);
 	pretty[0] = utils.zeropad(pretty[0]);
@@ -122,7 +122,8 @@ module.exports = {
 			.setRequired(true))
 		.addBooleanOption(option => option.setName('force')
 			.setDescription('Force the song to be announced even if it\'s been announced before'))
-		.setDMPermission(false),
+		.setDMPermission(false)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 
 	async execute(interaction) {
