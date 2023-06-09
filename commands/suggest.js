@@ -4,6 +4,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const suggestionHistory = require('../models/suggestionHistory');
 const songHistory = require('../models/SOTDHistory');
 const { randomUUID } = require('crypto');
+const { remove_referer } = require('../etc/utils');
 
 async function hasHistory(serverID, song_url) {
 	const suggestion_count = await suggestionHistory.count({ guild_id: serverID.toString(), song_url: song_url.toString() });
@@ -29,8 +30,9 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 		const spotify_url_to_parse = interaction.options.getString('spotify-url');
+		const spotify_url = remove_referer(spotify_url_to_parse);
 		const guild_ID = interaction.guild.id;
-		const suggested = await hasHistory(guild_ID, spotify_url_to_parse);
+		const suggested = await hasHistory(guild_ID, spotify_url);
 		if (suggested) {
 			const NoticeEmbed = new EmbedBuilder()
 				.setColor([255, 0, 0])
@@ -42,7 +44,7 @@ module.exports = {
 		}
 		else {
 			const UUID = randomUUID();
-			const suggestionentry = new suggestionHistory({ guild_id: interaction.guild.id, song_url: spotify_url_to_parse, user_id: interaction.user.tag, suggestion_id: UUID, used: false });
+			const suggestionentry = new suggestionHistory({ guild_id: interaction.guild.id, song_url: spotify_url, user_id: interaction.user.tag, suggestion_id: UUID, used: false });
 			suggestionentry.save();
 
 			await interaction.editReply({ content: 'Suggestion Saved!', ephemeral: true }).then();

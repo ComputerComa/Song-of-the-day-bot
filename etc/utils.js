@@ -46,4 +46,16 @@ module.exports = {
 			return false;
 		}
 	},
+	remove_referer: function removeReferer(input) {
+		if (input.includes('?si')) {
+			const out_1 = input.split('?si');
+			// console.log(out_1);
+			const out_2 = out_1[0];
+			return out_2;
+		}
+		else {
+			return input;
+		}
+
+	},
 };

@@ -128,15 +128,15 @@ module.exports = {
 
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
-		const spotify_url_to_parse = interaction.options.getString('spotify-url');
-		const isNewURl = spotify_url_to_parse.includes('?si=');
-		const songID = utils.getSongID(spotify_url_to_parse, isNewURl);
+		let spotify_url_to_parse = interaction.options.getString('spotify-url');
+		spotify_url_to_parse = utils.remove_referer(spotify_url_to_parse);
+		const songID = utils.getSongID(spotify_url_to_parse, false);
 		// console.log(songID);
 		const guild_ID = interaction.guild.id;
 		const ping_role = interaction.options.getRole('ping-role');
 		const trackinfo = await getData(spotify_url_to_parse).then(data => spotifydata = data);
 		const storable_url = utils.reconvertURL(songID);
-		const sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse);
+		const sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), remove_referer(spotify_url_to_parse));
 		const announced = await hasAnnouncedHistory(guild_ID, songID);
 		const forced = interaction.options.getBoolean('force') ?? false;
 		console.log(forced);
