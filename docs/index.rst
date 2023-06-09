@@ -6,9 +6,6 @@
 Welcome to SOTD Bot's documentation!
 ====================================
 Current version: |release|
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
 
 ==================
@@ -26,7 +23,7 @@ Getting Started With Announcements
 3. To send an announcement use the ``/announce`` command. 
 4. To view the announcement history for your server use the ``/get-announcement-history`` command.
 5. By default only server administrators can create a Song of the Day announcement and view announcement history.
-6. To view a list of all commands and their parameters please look at ::doc:`/commands` 
+6. To view a list of all commands and their parameters please look at :doc:`/commands` 
 
 
 
