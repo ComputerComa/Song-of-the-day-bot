@@ -136,7 +136,7 @@ module.exports = {
 		const ping_role = interaction.options.getRole('ping-role');
 		const trackinfo = await getData(spotify_url_to_parse).then(data => spotifydata = data);
 		const storable_url = utils.reconvertURL(songID);
-		const sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), remove_referer(spotify_url_to_parse));
+		const sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse);
 		const announced = await hasAnnouncedHistory(guild_ID, songID);
 		const forced = interaction.options.getBoolean('force') ?? false;
 		console.log(forced);
