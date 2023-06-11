@@ -36,7 +36,7 @@ module.exports = {
 		const out_2 = this.rebuildSongID(out_1);
 		return out_2;
 	},
-	validate_spotify_url: function validateURL(input) {
+	validate_spotify_url: function validate_spotify_url(input) {
 		const reg = /((open)\.spotify\.com\/)/;
 		const out = input.match(reg);
 		if (out > 0) {
@@ -46,7 +46,7 @@ module.exports = {
 			return false;
 		}
 	},
-	remove_referer: function removeReferer(input) {
+	remove_referer: function remove_referer(input) {
 		if (input.includes('?si')) {
 			const out_1 = input.split('?si');
 			// console.log(out_1);
