@@ -40,7 +40,7 @@ module.exports = {
 		const reg = /((open)\.spotify\.com\/track)/;
 		const out = input.match(reg);
 		// console.log(out)
-		if ( out !== null) {
+		if (out !== null) {
 			return true;
 		}
 		else {
