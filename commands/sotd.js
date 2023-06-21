@@ -130,57 +130,64 @@ module.exports = {
 		await interaction.deferReply({ ephemeral: true });
 		let spotify_url_to_parse = interaction.options.getString('spotify-url');
 		spotify_url_to_parse = utils.remove_referer(spotify_url_to_parse);
-		const songID = utils.getSongID(spotify_url_to_parse, false);
-		// console.log(songID);
-		const guild_ID = interaction.guild.id;
-		const ping_role = interaction.options.getRole('ping-role');
-		const trackinfo = await getData(spotify_url_to_parse).then(data => spotifydata = data);
-		const storable_url = utils.reconvertURL(songID);
-		const sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse);
-		const announced = await hasAnnouncedHistory(guild_ID, songID);
-		const forced = interaction.options.getBoolean('force') ?? false;
-		console.log(forced);
-		if (announced & !forced) {
-			const historyitem = await SOTDHistory.findOne({ guild_id: guild_ID.toString(), song_ID: songID.toString() });
-			const date = historyitem.date_announced.toString();
-			const NoticeEmbed = new EmbedBuilder()
-				.setColor([255, 0, 0])
-				.setTitle('Notice')
-				.setDescription('It appears you already have announced this song in this server before.\nIf you still would like to announce this song set the Force option to true')
-				.addFields({
-					name: 'Last announced',
-					value: `_${date}_`,
-				});
-			await interaction.editReply({ content: 'Announcement Cancelled!', ephemeral: true });
-			await interaction.followUp({ ephemeral: true, embeds: [NoticeEmbed] });
+		const valid = utils.validate_spotify_url(spotify_url_to_parse);
+		if (valid) {
+			const songID = utils.getSongID(spotify_url_to_parse, false);
+			// console.log(songID);
+			const guild_ID = interaction.guild.id;
+			const ping_role = interaction.options.getRole('ping-role');
+			const trackinfo = await getData(spotify_url_to_parse).then(data => spotifydata = data);
+			const storable_url = utils.reconvertURL(songID);
+			const sotdPingEmbed = await buildSotdEmbed(interaction.options.getRole('ping-role'), interaction.options.getUser('user-credit'), spotify_url_to_parse);
+			const announced = await hasAnnouncedHistory(guild_ID, songID);
+			const forced = interaction.options.getBoolean('force') ?? false;
+			console.log(forced);
+			if (announced & !forced) {
+				const historyitem = await SOTDHistory.findOne({ guild_id: guild_ID.toString(), song_ID: songID.toString() });
+				const date = historyitem.date_announced.toString();
+				const NoticeEmbed = new EmbedBuilder()
+					.setColor([255, 0, 0])
+					.setTitle('Notice')
+					.setDescription('It appears you already have announced this song in this server before.\nIf you still would like to announce this song set the Force option to true')
+					.addFields({
+						name: 'Last announced',
+						value: `_${date}_`,
+					});
+				await interaction.editReply({ content: 'Announcement Cancelled!', ephemeral: true });
+				await interaction.followUp({ ephemeral: true, embeds: [NoticeEmbed] });
 
-		}
-		else if (announced & forced) {
-			await interaction.editReply({ content: 'Forced Announcement Sent!', ephemeral: true });
-			await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
-			await interaction.channel.send({ embeds: [sotdPingEmbed] })
-				.then((message) => {
-					message.react('🇲');
-					message.react('🇺');
-					message.react('🇸');
-					message.react('🇮');
-					message.react('🇨');
-				});
+			}
+			else if (announced & forced) {
+				await interaction.editReply({ content: 'Forced Announcement Sent!', ephemeral: true });
+				await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
+				await interaction.channel.send({ embeds: [sotdPingEmbed] })
+					.then((message) => {
+						message.react('🇲');
+						message.react('🇺');
+						message.react('🇸');
+						message.react('🇮');
+						message.react('🇨');
+					});
+			}
+			else {
+				const SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now(), song_name: trackinfo.name, song_url: storable_url });
+				SOTDHistoryEntry.save();
+
+				await interaction.editReply({ content: 'Announcement Sent!', ephemeral: true }).then();
+				await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
+				await interaction.channel.send({ embeds: [sotdPingEmbed] })
+					.then((message) => {
+						message.react('🇲');
+						message.react('🇺');
+						message.react('🇸');
+						message.react('🇮');
+						message.react('🇨');
+					});
+			}
 		}
 		else {
-			const SOTDHistoryEntry = new SOTDHistory({ guild_id: interaction.guild.id, song_ID: songID, date_announced: Date.now(), song_name: trackinfo.name, song_url: storable_url });
-			SOTDHistoryEntry.save();
-
-			await interaction.editReply({ content: 'Announcement Sent!', ephemeral: true }).then();
-			await interaction.channel.send({ content: `Hey ${ping_role}! There's a new SOTD suggestion!` });
-			await interaction.channel.send({ embeds: [sotdPingEmbed] })
-				.then((message) => {
-					message.react('🇲');
-					message.react('🇺');
-					message.react('🇸');
-					message.react('🇮');
-					message.react('🇨');
-				});
+			interaction.editReply({ content: 'Sorry, it appears this is not a valid Spotify song URL', ephemeral: true });
 		}
+
 	},
 };

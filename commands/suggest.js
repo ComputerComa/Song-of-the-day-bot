@@ -4,7 +4,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const suggestionHistory = require('../models/suggestionHistory');
 const songHistory = require('../models/SOTDHistory');
 const { randomUUID } = require('crypto');
-const { remove_referer } = require('../etc/utils');
+const { remove_referer, validate_spotify_url } = require('../etc/utils');
 
 async function hasHistory(serverID, song_url) {
 	const suggestion_count = await suggestionHistory.count({ guild_id: serverID.toString(), song_url: song_url.toString() });
@@ -31,23 +31,30 @@ module.exports = {
 		await interaction.deferReply({ ephemeral: true });
 		const spotify_url_to_parse = interaction.options.getString('spotify-url');
 		const spotify_url = remove_referer(spotify_url_to_parse);
+		const validated = validate_spotify_url(spotify_url_to_parse);
 		const guild_ID = interaction.guild.id;
 		const suggested = await hasHistory(guild_ID, spotify_url);
-		if (suggested) {
-			const NoticeEmbed = new EmbedBuilder()
-				.setColor([255, 0, 0])
-				.setTitle('Notice')
-				.setDescription('It appears this song has already been suggested or announced in this server before.');
-			await interaction.editReply({ content: 'Cancelled!', ephemeral: true });
-			await interaction.followUp({ ephemeral: true, embeds: [NoticeEmbed] });
+		if (validated) {
+			if (suggested) {
+				const NoticeEmbed = new EmbedBuilder()
+					.setColor([255, 0, 0])
+					.setTitle('Notice')
+					.setDescription('It appears this song has already been suggested or announced in this server before.');
+				await interaction.editReply({ content: 'Cancelled!', ephemeral: true });
+				await interaction.followUp({ ephemeral: true, embeds: [NoticeEmbed] });
 
+			}
+			else {
+				const UUID = randomUUID();
+				const suggestionentry = new suggestionHistory({ guild_id: interaction.guild.id, song_url: spotify_url, user_id: interaction.user.tag, suggestion_id: UUID, used: false });
+				suggestionentry.save();
+
+				await interaction.editReply({ content: 'Suggestion Saved!', ephemeral: true }).then();
+			}
 		}
 		else {
-			const UUID = randomUUID();
-			const suggestionentry = new suggestionHistory({ guild_id: interaction.guild.id, song_url: spotify_url, user_id: interaction.user.tag, suggestion_id: UUID, used: false });
-			suggestionentry.save();
-
-			await interaction.editReply({ content: 'Suggestion Saved!', ephemeral: true }).then();
+			interaction.editReply({ content: 'Sorry, it appears this is not a valid Spotify song URL', ephemeral: true });
 		}
+
 	},
 };

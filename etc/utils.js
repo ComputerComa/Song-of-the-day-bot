@@ -37,9 +37,10 @@ module.exports = {
 		return out_2;
 	},
 	validate_spotify_url: function validate_spotify_url(input) {
-		const reg = /((open)\.spotify\.com\/)/;
+		const reg = /((open)\.spotify\.com\/track)/;
 		const out = input.match(reg);
-		if (out > 0) {
+		// console.log(out)
+		if ( out !== null) {
 			return true;
 		}
 		else {
