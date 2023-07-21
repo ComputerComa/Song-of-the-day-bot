@@ -7,10 +7,10 @@ const { getData } = require('spotify-url-info')(fetch);
 const sort = { date_announced: -1 };
 async function buildHistoryEmbed(in_data, page_s, page_e, gid_Name) {
 
-	// console.log(in_data);
+	console.log(in_data);
 	const embed_fields = [];
-	// .log('start of loop');
-	// console.log(embed_fields);
+	console.log('start of loop');
+	console.log(embed_fields);
 	for (const suggestion of in_data) {
 		await getData(suggestion.song_url).then((spotifydata) => {
 			const trackinfo = spotifydata;
@@ -22,7 +22,7 @@ async function buildHistoryEmbed(in_data, page_s, page_e, gid_Name) {
 			});
 		});
 	}
-	// console.log('end of loop');
+	console.log('end of loop');
 	const historyEmbed = new EmbedBuilder()
 		.setTitle(`Suggestion list for ${gid_Name}`)
 		.setDescription(`Page ${page_s} of ${page_e}`)
@@ -53,7 +53,7 @@ module.exports = {
 			}
 			else if (page_to_query == 1) {
 				const page_result = await suggestion_History.find({ guild_id: guild_ID.toString(), used: false }, null, { limit : 10, sort: sort });
-				// console.log(page_result);
+				console.log(page_result);
 				const history_Embed = await buildHistoryEmbed(page_result, page_to_query, total_pages, guild_Name);
 				interaction.editReply({ content: `Page ${page_to_query} of ${total_pages} sent! \n to see another page please use the \`page\` option`, ephemeral: true });
 				interaction.channel.send({ embeds: [history_Embed] });
