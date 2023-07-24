@@ -46,6 +46,6 @@ module.exports = {
 			// console.log(result);
 			// await interaction.editReply({ content: 'This command is still under development', ephemeral: true });
 			const RandomEmbed = await buildEmbed(result);
-			await interaction.followUp({ ephemeral: true, embeds: [RandomEmbed] });
+			await interaction.followUp({ ephemeral: false, embeds: [RandomEmbed] });
 		}
 	} };

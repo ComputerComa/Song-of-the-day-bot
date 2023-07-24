@@ -22,7 +22,7 @@ module.exports = {
 			try {
 				await suggestionHistory.updateOne({ suggestion_id: suggestion_id, used: false }, { used: true }).then(result => {
 					if (result.modifiedCount > 0) {
-						interaction.editReply({ content: 'Update success.', ephemeral: true });
+						interaction.editReply({ content: 'Update success.' });
 					}
 					else {
 						interaction.editReply({ content: 'No matching suggestions found. Either this suggestion does not exist or it has already been marked as used! ', ephemeral: true });

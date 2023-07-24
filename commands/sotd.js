@@ -40,16 +40,16 @@ async function buildSotdEmbed(ping_role, user_credit, spotify_url_to_parse) {
 
 	await getData(spotify_url_to_parse).then(data => spotifydata = data);
 	const trackinfo = spotifydata;
-	console.log(trackinfo)
+	console.log(trackinfo);
 	const coverArtData = trackinfo.coverArt;
-	console.log(coverArtData)
+	console.log(coverArtData);
 
 	const album_image = coverArtData.sources[1].url;
-	console.log(album_image)
-	console.log(coverArtData.extractedColors.colorDark.hex)
+	console.log(album_image);
+	console.log(coverArtData.extractedColors.colorDark.hex);
 
 	const dominant_color = convert.hex.rgb(coverArtData.extractedColors.colorDark.hex);
-	console.log(dominant_color)
+	console.log(dominant_color);
 
 	let explicit = trackinfo.isExplicit;
 	if (explicit) {
