@@ -33,11 +33,11 @@ module.exports = {
 		.setDescription('Run this command to be presented with a random song to use as Song of the Day!')
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator | PermissionFlagsBits.ManageGuild),
 	async execute(interaction) {
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 		const guild_ID = interaction.guild.id;
 		const history_count = await suggestion_History.count({ guild_id: guild_ID.toString() });
 		if (history_count == 0) {
-			interaction.editReply({ content: 'This server currently has no song suggestions! \nSomebody has to suggest a song first for this to work! ', ephemeral: true });
+			interaction.editReply({ content: 'This server currently has no song suggestions! \nSomebody has to suggest a song first for this to work! ' });
 		}
 		else {
 			const results = await suggestion_History.find({ guild_id: guild_ID.toString(), used:false });
@@ -46,6 +46,6 @@ module.exports = {
 			// console.log(result);
 			// await interaction.editReply({ content: 'This command is still under development', ephemeral: true });
 			const RandomEmbed = await buildEmbed(result);
-			await interaction.followUp({ ephemeral: false, embeds: [RandomEmbed] });
+			await interaction.followUp({ embeds: [RandomEmbed] });
 		}
 	} };
