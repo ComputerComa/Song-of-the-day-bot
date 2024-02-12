@@ -100,7 +100,8 @@ async function buildSotdEmbed(ping_role, user_credit, spotify_url_to_parse) {
 }
 
 async function hasAnnouncedHistory(serverID, songID) {
-	const history_count = await SOTDHistory.count({ guild_id: serverID.toString(), song_ID: songID.toString() });
+
+	const history_count = await SOTDHistory.countDocuments({ guild_id: serverID.toString(), song_ID: songID.toString() });
 	if (history_count > 0) {
 		return true;
 	}

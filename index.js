@@ -17,10 +17,9 @@ const client = new Client({
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
-// Loading the token from .env file
-const dotenv = require('dotenv');
-dotenv.config();
-const TOKEN = process.env['TOKEN'];
+// Loading the token from config file
+const config = require('./config.json');
+const TOKEN = config.TOKEN;
 const commands = [];
 
 // Creating a collection for commands in client

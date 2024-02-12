@@ -35,7 +35,7 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply();
 		const guild_ID = interaction.guild.id;
-		const history_count = await suggestion_History.count({ guild_id: guild_ID.toString() });
+		const history_count = await suggestion_History.countDocuments({ guild_id: guild_ID.toString() });
 		if (history_count == 0) {
 			interaction.editReply({ content: 'This server currently has no song suggestions! \nSomebody has to suggest a song first for this to work! ' });
 		}

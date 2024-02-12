@@ -1,8 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const dotenv = require('dotenv');
-dotenv.config();
-const TOKEN = process.env['TOKEN'];
+const config = require('../config.json');
+const TOKEN = config.TOKEN;
 
 
 module.exports = {

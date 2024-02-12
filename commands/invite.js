@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
-const url = 'https://discord.com/api/oauth2/authorize?client_id=1014226427429798009&permissions=412317240384&scope=bot%20applications.commands';
+const url = 'https://discord.com/api/oauth2/authorize?client_id=1133450129148481638&permissions=414464735296&scope=bot+applications.commands';
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('invite')

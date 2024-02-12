@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+const config = require('../config.json');
 
 class Database {
 	constructor() {
@@ -7,7 +7,7 @@ class Database {
 	}
 	connect() {
 		console.log('Connecting to database...');
-		mongoose.connect(process.env.MONGO_URL, {
+		mongoose.connect(config.MONGO_URL, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 		}).then(() => {

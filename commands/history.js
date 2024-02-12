@@ -50,7 +50,7 @@ module.exports = {
 		const guild_ID = interaction.guild.id;
 		const guild_Name = interaction.guild.name;
 		const page_to_query = interaction.options.getInteger('page') ?? 1;
-		const history_count = await SOTDHistory.count({ guild_id: guild_ID.toString() });
+		const history_count = await SOTDHistory.countDocuments({ guild_id: guild_ID.toString() });
 		if (history_count == 0) {
 			interaction.editReply({ content: 'This server has never had a SOTD announcement!', ephemeral: true });
 		}

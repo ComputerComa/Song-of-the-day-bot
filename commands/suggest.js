@@ -7,8 +7,8 @@ const { randomUUID } = require('crypto');
 const { remove_referer, validate_spotify_url } = require('../etc/utils');
 
 async function hasHistory(serverID, song_url) {
-	const suggestion_count = await suggestionHistory.count({ guild_id: serverID.toString(), song_url: song_url.toString() });
-	const announced_count = await songHistory.count({ guild_id: serverID.toString(), song_url: song_url.toString() });
+	const suggestion_count = await suggestionHistory.countDocuments({ guild_id: serverID.toString(), song_url: song_url.toString() });
+	const announced_count = await songHistory.countDocuments({ guild_id: serverID.toString(), song_url: song_url.toString() });
 	const total_count = suggestion_count + announced_count;
 	console.log(total_count);
 	if (total_count >= 1) {
